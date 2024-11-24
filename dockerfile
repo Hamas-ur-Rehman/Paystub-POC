@@ -19,6 +19,6 @@ EXPOSE 8001
 EXPOSE 7860
 
 # Run the application
-# CMD ["gunicorn", "-c", "gunicorn_config.py", "main:app"]
+CMD ["gunicorn", "-c", "gunicorn_config.py", "main:app"]
 
-CMD ["python", "-u","ui.py"]
+# CMD ["python", "-u","ui.py"]
