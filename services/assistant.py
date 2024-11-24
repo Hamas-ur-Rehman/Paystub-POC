@@ -2,7 +2,7 @@ import os
 import json
 from dotenv import load_dotenv
 from openai import OpenAI
-from .logger import log
+from .logger import *
 from openai.types.beta.threads import Text, TextDelta
 from openai.types.beta.threads.runs import ToolCall, ToolCallDelta
 from openai import AssistantEventHandler

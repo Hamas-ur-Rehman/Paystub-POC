@@ -16,9 +16,13 @@ COPY . .
 
 # Make port 8001 available to the world outside this container
 EXPOSE 8001
-EXPOSE 7860
+# EXPOSE 7860
 
 # Run the application
 CMD ["gunicorn", "-c", "gunicorn_config.py", "main:app"]
+# CMD ["fastapi", "run", "main.py", "--port", "8001"]
+
+# CMD ["uvicorn","main:app","--port","8001"]
 
 # CMD ["python", "-u","ui.py"]
+ 

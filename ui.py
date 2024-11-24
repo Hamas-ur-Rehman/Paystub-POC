@@ -1,5 +1,6 @@
 from services.assistant import Assitant
 import gradio as gr
+import uuid
 
 assistant = Assitant()
 
@@ -48,6 +49,9 @@ with gr.Blocks() as demo:
             submit_btn = gr.Button("Submit")
 
         with gr.Column(scale=4):
+            with gr.Row():
+                session_id = gr.Textbox(label="Session ID", value=str(uuid.uuid4()) ,container=False,scale=9)
+                btn_session = gr.Button(value='regenerate id', variant='primary',scale=3)
             chatbot = gr.Chatbot(container=True)
             with gr.Row():    
                 msg = gr.Textbox(scale=9,container=False)
@@ -61,12 +65,16 @@ with gr.Blocks() as demo:
                 yield "",history
             else:
                 history = history + [[message,'']]
-                for i in assistant.get_response(query=message,session_id='d386c061e082XSA'):
+                for i in assistant.get_response(query=message,session_id=session_id.value):
                     history[-1][1] += i
                     yield "",history
     
+    def generate_session_id():
+        return gr.Textbox(label="Session ID", value=str(uuid.uuid4()) ,container=False,scale=9)
+    
     msg.submit(respond, [msg, chatbot], [msg, chatbot])
     btn.click(respond, [msg, chatbot], [msg, chatbot])
+    btn_session.click(fn= generate_session_id,inputs=None,outputs=[session_id])
 
     submit_btn.click(
         fn=process_form,

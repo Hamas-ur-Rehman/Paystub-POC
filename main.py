@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, UploadFile,Query
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from services.assistant import Assitant
+from services.logger import *
 from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
@@ -25,28 +26,33 @@ app.add_middleware(
 )
 
 @app.post("/stream/text")
-async def stream_output(input_data: dict = {
+def stream_output(input_data: dict = {
     'query': 'query',
     'session_id': 'session_id'
     }):
-    return StreamingResponse(agent.get_response(query=input_data.get('query'), session_id=input_data.get('session_id')), media_type="text/plain")
+    try: 
+        return StreamingResponse(agent.get_response(query=input_data.get('query'), session_id=input_data.get('session_id')), media_type="text/plain")
+    except Exception as e:
+        logger.error(e)
+        return {"error": "An error occurred"}
+ 
+ 
+# @app.post("/stream/audio")
+# def process_audio(file: UploadFile = File(...), input_data: dict ={
+#     'session_id': 'session_id'
+#     }):
+#     audio_data = await file.read()
+#     session_id = input_data.get('session_id')
 
+#     #  temporary save the file to disk
+#     with open(f"{session_id}temp.wav", "wb") as f:
+#         f.write(audio_data)
 
-@app.post("/stream/audio")
-async def process_audio(file: UploadFile = File(...), input_data: dict ={
-    'session_id': 'session_id'
-    }):
-    audio_data = await file.read()
+#     transcription = client.audio.transcriptions.create(
+#         model="whisper-1", 
+#         file=open(f"{session_id}temp.wav", "rb")
+#         )
+#     if transcription.text:
+#         response = agent.get_response(query=transcription.text, session_id=input_data.get('session_id'), audio=True)
 
-    #  temporary save the file to disk
-    with open(f"{session_id}temp.wav", "wb") as f:
-        f.write(audio_data)
-
-    transcription = client.audio.transcriptions.create(
-        model="whisper-1", 
-        file=open(f"{session_id}temp.wav", "rb")
-        )
-    if transcription.text:
-        response = agent.get_response(query=transcription.text, session_id=input_data.get('session_id'), audio=True)
-
-    return StreamingResponse(response) 
+#     return StreamingResponse(response) 
