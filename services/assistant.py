@@ -11,29 +11,24 @@ from typing_extensions import override
 load_dotenv()
 
 # EventHandler class to define how to handle events in the response stream.
-class EventHandler(AssistantEventHandler):
-    @override
-    def on_text_created(self, text) -> None:
-        yield f"\nassistant > "
 
-    @override
-    def on_text_delta(self, delta, snapshot):
-        yield delta.value
-
-    def on_tool_call_created(self, tool_call):
-        yield f"\nassistant > {tool_call.type}\n"
-
-    def on_tool_call_delta(self, delta, snapshot):
-        if delta.type == 'code_interpreter':
-            if delta.code_interpreter.input:
-                yield delta.code_interpreter.input
-            if delta.code_interpreter.outputs:
-                yield f"\n\noutput >"
-                for output in delta.code_interpreter.outputs:
-                    if output.type == "logs":
-                        yield f"\n{output.logs}"
-
-
+def handle_requires_action(data):
+    tool_outputs = []
+    tools_to_run = []
+    
+    for tool in data.required_action.submit_tool_outputs.tool_calls:
+        tool_outputs.append(
+                {"tool_call_id": tool.id, "output": "{success:true}"}
+            )
+        tools_to_run.append(
+            {
+                "function_name": tool.function.name,
+                "inputs": tool.function.arguments,
+            }
+        )
+    
+    return tool_outputs, tools_to_run
+    
 class Assitant:
     def __init__(self):
         self.thread_log = "./thread_log.json"
@@ -69,8 +64,30 @@ class Assitant:
         with self.client.beta.threads.runs.stream(
                     thread_id=thread,
                     assistant_id=os.getenv("ASSISTANT_ID"),
-                    event_handler=EventHandler(),
                 ) as stream:
+                    for event in stream:
+                        log.info(f"{event.event}")
+                        if event.event == "thread.message.delta":
+                            yield event.data.delta.content[0].text.value
+                        elif event.event == "thread.run.requires_action":
+                            run_id = event.data.id
+                            tool_outputs, tools_to_run = handle_requires_action(event.data)
+                            yield "\n\n```FUNCTION_CALL_START\n\n"
+                            yield json.dumps(tools_to_run,indent=4)
+                            yield "\n\n```FUNCTION_CALL_END\n\n"
+
+                            if tool_outputs:
+                                with self.client.beta.threads.runs.submit_tool_outputs_stream(
+                                    thread_id=thread,
+                                    run_id=run_id,
+                                    tool_outputs=tool_outputs,
+                                ) as stream:
+                                    log.info("--------Tool Outputs Submitted------")
+                                    for internal_event in stream:
+                                        log.info(f"{internal_event.event}")
+                                        if internal_event.event ==  "thread.message.delta":
+                                            yield internal_event.data.delta.content[0].text.value
+
                     if not audio:
                         yield from stream.text_deltas
                     else:
