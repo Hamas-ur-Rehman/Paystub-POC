@@ -1,0 +1,788 @@
+[
+  {
+    "type": "function",
+    "name": "choose_paystub_template",
+    "description": "Help the user choose from one of the 10 available paystub templates.",
+    "parameters": {
+      "type": "object",
+      "required": [
+        "template_choice"
+      ],
+      "properties": {
+        "template_choice": {
+          "type": "string",
+          "description": "The selected paystub template option.",
+          "enum": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+,
+{
+  "type": "function",
+  "name": "upload_company_logo",
+  "description": "Upload company logo file that will show on the paystub",
+  "parameters": {
+    "type": "object",
+    "required": [],
+    "properties": {},
+    "additionalProperties": false
+  }
+},
+{
+  "name": "open_chat",
+  "description": "Chat with our human agents, this function will open the chat experience with live agents.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  }
+},
+{
+  "name": "preview_paystubs",
+  "description": "Simple function to preview the user's paystubs in a near full-screen pop-up.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false,
+    "required": []
+  }
+},
+{
+  "name": "submit_paystub_form",
+  "description": "Submit the paystub generation form to move to the next step to finalize his paystubs and download them",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_email_for_paystubs",
+  "description": "Function to fill the user's email where he would like to receive his paystubs on.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "email"
+    ],
+    "properties": {
+      "email": {
+        "type": "string",
+        "description": "User's email address in a valid format"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "add_direct_deposit_slip",
+  "type": "function",
+  "description": "A function to optionally add a Direct Deposit slip, with options for account details.",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "add_direct_deposit"
+    ],
+    "properties": {
+      "add_direct_deposit": {
+        "type": "boolean",
+        "description": "Indicates whether to add a Direct Deposit slip or not."
+      },
+      "account_number": {
+        "type": "string",
+        "description": "The account number for the Direct Deposit."
+      },
+      "routing_number": {
+        "type": "string",
+        "description": "The routing number for the bank."
+      },
+      "bank_name": {
+        "type": "string",
+        "description": "The name of the bank."
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_paydates",
+  "description": "Set number of paydates needed. Integer required from 1 and above.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "number_of_paydates"
+    ],
+    "properties": {
+      "number_of_paydates": {
+        "type": "integer",
+        "description": "The number of paydates needed, must be 1 or greater."
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_document_recipient",
+  "description": "Sets the recipient for a document",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "recipient"
+    ],
+    "properties": {
+      "recipient": {
+        "type": "string",
+        "description": "The person or entity to which the document is sent",
+        "enum": [
+          "myself",
+          "an_employee",
+          "a_contractor",
+          "my_business",
+          "a_friend_relative",
+          "other"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_purchase_reason",
+  "description": "Sets the reason for a purchase from predefined options",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "reason"
+    ],
+    "properties": {
+      "reason": {
+        "type": "string",
+        "description": "The reason for the purchase",
+        "enum": [
+          "apartment_rent",
+          "mortgage",
+          "car_loan_purchase",
+          "personal_loan",
+          "payroll",
+          "documentation_record_keeping",
+          "proof_of_income",
+          "proof_of_employment",
+          "other"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_latest_paydate",
+  "description": "Lets the user select the latest paydate to create, returning a date string in format 'mm-dd-yyyy'",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "paydate"
+    ],
+    "properties": {
+      "paydate": {
+        "type": "string",
+        "description": "Latest pay date in format 'mm-dd-yyyy'"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_company_name",
+  "description": "Sets the company name for the paystub being created",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "company_name"
+    ],
+    "properties": {
+      "company_name": {
+        "type": "string",
+        "description": "The name of the company for the paystub"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_company_phone_number",
+  "description": "Sets the company phone number along with an optional extension.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "phone_number",
+      "ext_no"
+    ],
+    "properties": {
+      "phone_number": {
+        "type": "string",
+        "description": "The phone number in the format (XXX) XXX-XXXX"
+      },
+      "ext_no": {
+        "type": "number",
+        "description": "The extension number in the format XX-XXXXXXX"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_company_ein",
+  "description": "Sets the employer identification number (EIN) of the company on the paystub.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "ein"
+    ],
+    "properties": {
+      "ein": {
+        "type": "string",
+        "description": "Employer identification number in the format XX-XXXXXXX"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_employment_type",
+  "description": "Sets the employment type as either 'employee' or 'contractor'",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "employment_type"
+    ],
+    "properties": {
+      "employment_type": {
+        "type": "string",
+        "description": "Type of employment, must be either 'employee' or 'contractor'",
+        "enum": [
+          "employee",
+          "contractor"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_employee_or_contractor_name",
+  "description": "Takes a string the full name of the contractor or employee as a parameter",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "full_name"
+    ],
+    "properties": {
+      "full_name": {
+        "type": "string",
+        "description": "The full name of the contractor or employee"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_last_4_digits_of_ssn",
+  "description": "Takes in parameter a 4 digit number that represents the last 4 digits of the social security number of the employee or contractor",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "last_4_digits"
+    ],
+    "properties": {
+      "last_4_digits": {
+        "type": "number",
+        "description": "The last four digits of the social security number"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_employee_or_contractor_id",
+  "description": "Takes a string that represents the employee/contractor ID which is a code assigned by an employer to uniquely identify their employee or contractor",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "employee_or_contractor_id"
+    ],
+    "properties": {
+      "employee_or_contractor_id": {
+        "type": "string",
+        "description": "The unique identifier code assigned to the employee or contractor"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_using_w4_from_2020_and_beyond",
+  "description": "Sets whether the employee is using a W4 form from the year 2020 or later.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "using_w4_2020_or_later"
+    ],
+    "properties": {
+      "using_w4_2020_or_later": {
+        "type": "boolean",
+        "description": "Indicates if the employee is using a W4 form from 2020 or later, default is true."
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_dependants_total_amount",
+  "description": "Calculates the total amount based on the number of dependents and specific income thresholds.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "dollar_amount"
+    ],
+    "properties": {
+      "dollar_amount": {
+        "type": "number",
+        "description": "The input amount which must be a number rounded to two decimal places."
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_other_income_amount",
+  "description": "If you want to withhold tax for other income you expect this year that do not have withholding, type the amount of other income here. Other income may include interest, dividends, and retirement income. You will be able to find this amount in form W-4, Step 4 Box(a).",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "amount"
+    ],
+    "properties": {
+      "amount": {
+        "type": "number",
+        "description": "The dollar amount of other income, represented as a 2 decimal number"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_deduction_amount",
+  "description": "Use this field if you want to reduce your withholding by claiming deductions other than the standard deduction. You will be able to find this amount in form W-4, Step 4 Box (b).",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "deduction_amount"
+    ],
+    "properties": {
+      "deduction_amount": {
+        "type": "number",
+        "description": "The dollar value of the deductions claimed, rounded to 2 decimal places"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_is_employee_working_from_home",
+  "description": "By choosing this option, meaning the employee is a remote worker, the taxes/deductions will be calculated based on the employee's address instead of the company address.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "is_working_from_home"
+    ],
+    "properties": {
+      "is_working_from_home": {
+        "type": "boolean",
+        "description": "Indicates if the employee is working from home (remote worker)"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_working_multiple_jobs",
+  "description": "Choose this if you (1) currently have two jobs, or (2) married filing jointly and you and your spouse each have one job. This can be found on form W-4, Step 2 Box (c).",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "working_multiple_jobs"
+    ],
+    "properties": {
+      "working_multiple_jobs": {
+        "type": "boolean",
+        "description": "Indicates if the user has multiple jobs or is married filing jointly with a working spouse. Default is false."
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_federal_filing_status",
+  "description": "Sets the federal filing status of the employee.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "filing_status"
+    ],
+    "properties": {
+      "filing_status": {
+        "type": "string",
+        "description": "The federal filing status of the employee. S = Single. M = Married. H = Head Of HouseHold",
+        "enum": [
+          "S",
+          "M",
+          "H"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_company_address",
+  "description": "Sets the address information for a company",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "city",
+      "state",
+      "street_address",
+      "zipcode"
+    ],
+    "properties": {
+      "apt_ste_no": {
+        "type": "string",
+        "description": "Apartment or suite number"
+      },
+      "city": {
+        "type": "string",
+        "description": "City where the company is located"
+      },
+      "state": {
+        "type": "string",
+        "description": "US States abbreviation ('Alabama'='AL','Alaska'='AK','Arizona'='AZ','Arkansas'='AR','California'='CA','Colorado'='CO','Connecticut'='CT','Delaware'='DE','Florida'='FL','Georgia'='GA','Hawaii'='HI','Idaho'='ID','Illinois'='IL','Indiana'='IN','Iowa'='IA','Kansas'='KS','Kentucky'='KY','Louisiana'='LA','Maine'='ME','Maryland'='MD','Massachusetts'='MA','Michigan'='MI','Minnesota'='MN','Mississippi'='MS','Missouri'='MO','Montana'='MT','Nebraska'='NE','Nevada'='NV','New Hampshire'='NH','New Jersey'='NJ','New Mexico'='NM','New York'='NY','North Carolina'='NC','North Dakota'='ND','Ohio'='OH','Oklahoma'='OK','Oregon'='OR','Pennsylvania'='PA','Rhode Island'='RI','South Carolina'='SC','South Dakota'='SD','Tennessee'='TN','Texas'='TX','Utah'='UT','Vermont'='VT','Virginia'='VA','Washington'='WA','West Virginia'='WV','Wisconsin'='WI','Wyoming'='WY')",
+        "enum": [
+          "AL",
+          "AK",
+          "AZ",
+          "AR",
+          "CA",
+          "CO",
+          "CT",
+          "DE",
+          "FL",
+          "GA",
+          "HI",
+          "ID",
+          "IL",
+          "IN",
+          "IA",
+          "KS",
+          "KY",
+          "LA",
+          "ME",
+          "MD",
+          "MA",
+          "MI",
+          "MN",
+          "MS",
+          "MO",
+          "MT",
+          "NE",
+          "NV",
+          "NH",
+          "NJ",
+          "NM",
+          "NY",
+          "NC",
+          "ND",
+          "OH",
+          "OK",
+          "OR",
+          "PA",
+          "RI",
+          "SC",
+          "SD",
+          "TN",
+          "TX",
+          "UT",
+          "VT",
+          "VA",
+          "WA",
+          "WV",
+          "WI",
+          "WY"
+        ]
+      },
+      "street_address": {
+        "type": "string",
+        "description": "Street address of the company"
+      },
+      "zipcode": {
+        "type": "string",
+        "description": "Postal code for the company address"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_employee_contractor_address",
+  "type": "function",
+  "description": "Sets the address information for a employee/contractor",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "city",
+      "state",
+      "street_address",
+      "zipcode"
+    ],
+    "properties": {
+      "apt_ste_no": {
+        "type": "string",
+        "description": "Apartment or suite number"
+      },
+      "city": {
+        "type": "string",
+        "description": "City where the employee/contractor is located"
+      },
+      "state": {
+        "type": "string",
+        "description": "US States abbreviation ('Alabama'='AL','Alaska'='AK','Arizona'='AZ','Arkansas'='AR','California'='CA','Colorado'='CO','Connecticut'='CT','Delaware'='DE','Florida'='FL','Georgia'='GA','Hawaii'='HI','Idaho'='ID','Illinois'='IL','Indiana'='IN','Iowa'='IA','Kansas'='KS','Kentucky'='KY','Louisiana'='LA','Maine'='ME','Maryland'='MD','Massachusetts'='MA','Michigan'='MI','Minnesota'='MN','Mississippi'='MS','Missouri'='MO','Montana'='MT','Nebraska'='NE','Nevada'='NV','New Hampshire'='NH','New Jersey'='NJ','New Mexico'='NM','New York'='NY','North Carolina'='NC','North Dakota'='ND','Ohio'='OH','Oklahoma'='OK','Oregon'='OR','Pennsylvania'='PA','Rhode Island'='RI','South Carolina'='SC','South Dakota'='SD','Tennessee'='TN','Texas'='TX','Utah'='UT','Vermont'='VT','Virginia'='VA','Washington'='WA','West Virginia'='WV','Wisconsin'='WI','Wyoming'='WY')",
+        "enum": [
+          "AL",
+          "AK",
+          "AZ",
+          "AR",
+          "CA",
+          "CO",
+          "CT",
+          "DE",
+          "FL",
+          "GA",
+          "HI",
+          "ID",
+          "IL",
+          "IN",
+          "IA",
+          "KS",
+          "KY",
+          "LA",
+          "ME",
+          "MD",
+          "MA",
+          "MI",
+          "MN",
+          "MS",
+          "MO",
+          "MT",
+          "NE",
+          "NV",
+          "NH",
+          "NJ",
+          "NM",
+          "NY",
+          "NC",
+          "ND",
+          "OH",
+          "OK",
+          "OR",
+          "PA",
+          "RI",
+          "SC",
+          "SD",
+          "TN",
+          "TX",
+          "UT",
+          "VT",
+          "VA",
+          "WA",
+          "WV",
+          "WI",
+          "WY"
+        ]
+      },
+      "street_address": {
+        "type": "string",
+        "description": "Street address of the employee/contractor"
+      },
+      "zipcode": {
+        "type": "string",
+        "description": "Postal code for the employee/contractor address"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_payment_type",
+  "description": "Whether this person is paid on a hourly basis or on a fixed salary basis",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "payment_type"
+    ],
+    "properties": {
+      "payment_type": {
+        "type": "string",
+        "description": "The payment type of the individual, either hourly or salaried",
+        "enum": [
+          "hourly",
+          "salaried"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_hourly_rate",
+  "description": "Sets the hourly rate of the employee/contractor",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "hourly_rate"
+    ],
+    "properties": {
+      "hourly_rate": {
+        "type": "number",
+        "description": "The hourly rate of the employee/contractor, rounded to 2 decimal places"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_annual_salary",
+  "description": "This is the annual salary of the employee/contractor",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "annual_salary"
+    ],
+    "properties": {
+      "annual_salary": {
+        "type": "number",
+        "description": "Annual salary of the employee/contractor, must be a 2 decimal number"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_employee_or_contractor_hire_date",
+  "type": "function",
+  "description": "Sets the hire date for an employee or contractor based on user preference.",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "enabled"
+    ],
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "This is just whether the person wants to provide the hire date or not"
+      },
+      "hire_date": {
+        "type": "string",
+        "description": "Represents the hire date of the employee/contractor"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_show_hourly_rate_on_stub",
+  "type": "function",
+  "description": "Show the hourly rate of the employee on the paystub alongside his salary",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "enabled"
+    ],
+    "properties": {
+      "enabled": {
+        "type": "boolean",
+        "description": "Show the hourly rate of the employee on the paystub alongside his salary"
+      },
+      "hours_worked_per_pay_period": {
+        "type": "number",
+        "description": "The hours the employee works per pay period"
+      }
+    },
+    "additionalProperties": false
+  }
+},
+{
+  "name": "set_pay_frequency",
+  "description": "Sets the payment frequency for processing payroll for this employee/contractor.",
+  "type": "function",
+  "parameters": {
+    "type": "object",
+    "required": [
+      "pay_frequency"
+    ],
+    "properties": {
+      "pay_frequency": {
+        "type": "string",
+        "description": "Choices: Bi-Weekly, Weekly, Monthly, Annually, Daily, Semi-Monthly, Quarterly, Semi-Annually",
+        "enum": [
+          "biweekly",
+          "weekly",
+          "monthly",
+          "annually",
+          "daily",
+          "semimonthly",
+          "quarterly",
+          "semiannually"
+        ]
+      }
+    },
+    "additionalProperties": false
+  }
+}
+]

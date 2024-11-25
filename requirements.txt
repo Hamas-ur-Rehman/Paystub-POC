@@ -6,3 +6,9 @@ gunicorn
 python-multipart
 gradio
 fastapi[standard]
+websocket-client
+numpy
+sounddevice
+pydub
+soundfile
+pymongo
