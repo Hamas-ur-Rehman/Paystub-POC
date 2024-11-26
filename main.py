@@ -1,4 +1,5 @@
 import json
+import base64
 import os
 import websocket
 import websockets
@@ -7,8 +8,10 @@ from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from services.assistant import Assitant
 from services.logger import log
-from services.mongo_service import MongoDBService
+from services.history_service import HistoryService
 from realtime_sessions.configure import session_update
+from services.utils import *
+import numpy as np
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -16,7 +19,7 @@ load_dotenv()
 
 # Initialize FastAPI app
 app = FastAPI()
-mongo_service = MongoDBService()
+history_service = HistoryService()
 
 
 # Add CORS middleware to allow all origins
@@ -46,11 +49,23 @@ async def audio_stream(websocket_: WebSocket):
     await websocket_.accept()
     try:
         while True:
-            data_buffer = []
             data = await websocket_.receive_text()
             audio_chunk = json.loads(data)
-            base64_audio = audio_chunk.get("audio_bytes")
+            raw_audio = audio_chunk.get("audio_bytes")
             session_id = audio_chunk.get("session_id")
+            
+            try:
+                raw_audio = np.array(raw_audio, dtype=np.float32)
+            except Exception as e:
+                await websocket_.send_text(json.dumps({"error": "An error occurred while processing the audio"}))
+                log.error(e, exc_info=True)
+                return
+            log.info(f"Audio chunk recieved: {raw_audio[:10]}")
+            # Handle multi-channel audio by taking the first channel
+            if len(raw_audio.shape) > 1:
+                raw_audio = raw_audio[:, 0]
+
+            base64_audio = base64_encode_audio(raw_audio)
 
             if base64_audio:
                 url = "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01"
@@ -62,8 +77,8 @@ async def audio_stream(websocket_: WebSocket):
                     history = []
                     try:
                         log.info("Fetching session history")
-                        session_history = mongo_service.fetch_chats(session_id=session_id)
-                        if session_history:
+                        session_history = history_service.fetch_chats(session_id=session_id)
+                        if len(session_history) > 0:
                             session_update['session']['instructions'] = session_update['session']['instructions'] +  f"\n\nThis is the entire history of the conversation so far {json.dumps(session_history)}"
                         await internal_socket.send(json.dumps(session_update))
 
@@ -75,9 +90,13 @@ async def audio_stream(websocket_: WebSocket):
                     await internal_socket.send(json.dumps({"type": "input_audio_buffer.commit"}))
                     await internal_socket.send(json.dumps({"type": "response.create"}))
                     previous_type = None
+                    chunk = 0
 
                     while True:
                         try:
+                            if chunk == 0:
+                                await websocket_.send_text(json.dumps({"transcript": "\n","new": True}))
+                                chunk += 1
                             response = await internal_socket.recv()
                             message = json.loads(response)
                             log.info(message.get("type"))
@@ -96,7 +115,7 @@ async def audio_stream(websocket_: WebSocket):
                                     history.append(data)    
 
                             elif message.get("type") == 'response.audio_transcript.done':
-                                history.append({"role": "assistant", "content": message.get("transcript")})                               
+                                history.append({"role": "assistant", "content": message.get("transcript")})  
 
                             elif message.get("type") == 'response.function_call_arguments.done':
                                 tool_call_id = message.get("call_id")
@@ -132,7 +151,7 @@ async def audio_stream(websocket_: WebSocket):
                                 if previous_type == "response.function_call_arguments.done":
                                     pass
                                 else:
-                                    mongo_service.insert_chat(session_id=session_id,history=history)
+                                    history_service.insert_chat(session_id=session_id,history=history)
                                     break
 
 

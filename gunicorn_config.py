@@ -2,7 +2,7 @@
 
 import multiprocessing
 
-bind = "0.0.0.0:8002"  # IP and port to bind the server
+bind = "0.0.0.0:8001"  # IP and port to bind the server
 workers = multiprocessing.cpu_count() * 2 + 1  # Number of worker processes
 worker_class = "uvicorn.workers.UvicornWorker"  # Worker class for handling requests
 threads = multiprocessing.cpu_count() * 2  # Number of threads per worker
