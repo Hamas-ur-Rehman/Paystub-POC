@@ -4,7 +4,7 @@ FMT = "{asctime} [{levelname:^9}] [ {module} - L{lineno} ]: {message}"  # Format
 FORMATS = {
     logging.DEBUG: FMT,
     logging.INFO: f"\33[33m{FMT}\33[0m",
-    logging.WARNING: f"\33[35m{FMT}\[0m",
+    logging.WARNING: f"\33[35m{FMT}\33[0m",
     logging.ERROR: f"\33[31m{FMT}\33[0m",
     logging.CRITICAL: f"\33[41m{FMT}\33[0m",
 }
