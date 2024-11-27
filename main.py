@@ -116,7 +116,7 @@ async def handle_media_stream(websocket: WebSocket):
                     log.info(f"{message.get('type')} - {message.get('event_id')}")
 
                     if message.get("type") == "response.content_part.added":
-                        await websocket.send_text(json.dumps({"transcript": "\n","end": False,"new":True}))
+                        await websocket.send_text(json.dumps({"end": False,"new":True}))
                     
                     elif  message.get("type") == "response.created":
                         
@@ -162,7 +162,7 @@ async def handle_media_stream(websocket: WebSocket):
                     elif message.get("type") == "response.done":
                         if session_id:
                             history_service.insert_chat(session_id=session_id, history=history)
-                        await websocket.send_text(json.dumps({"transcript": "\n","end": True}))
+                        await websocket.send_text(json.dumps({"end": True}))
 
             except Exception as e:
                 log.error(f"Error in sending audio delta back to client: {e}",exc_info=True)
